@@ -1,0 +1,109 @@
+{
+	"name": "svelte-md-template",
+	"version": "0.1.0",
+	"description": "transform markdown to html in Svelte files via explicit template",
+	"license": "MIT",
+	"author": {
+		"email": "oss@vnphanquang.com",
+		"name": "quang",
+		"url": "https://github.com/vnphanquang"
+	},
+	"homepage": "https://github.com/vnphanquang/svelte-md-template",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/vnphanquang/svelte-md-template.git"
+	},
+	"bugs": {
+		"url": "https://github.com/vnphanquang/svelte-md-template/issues"
+	},
+	"keywords": [
+		"vite",
+		"svelte",
+		"markdown",
+		"remark",
+		"template",
+		"embed",
+		"preprocessor"
+	],
+	"type": "module",
+	"main": "src/index.js",
+	"types": "types/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./types/index.d.ts",
+			"import": "./src/index.js"
+		},
+		"./vite": {
+			"types": "./types/index.d.ts",
+			"import": "./src/vite/index.js"
+		}
+	},
+	"files": [
+		"src",
+		"types",
+		"README.md"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"dev": "vite dev",
+		"lint:es": "eslint .",
+		"lint": "run-p lint:*",
+		"format": "prettier . --check",
+		"build": "pnpm dts && publint",
+		"dts": "dts-buddy --write",
+		"test": "vitest --coverage",
+		"ci:test": "vitest run --coverage"
+	},
+	"devDependencies": {
+		"@changesets/changelog-github": "^1.0.0",
+		"@changesets/cli": "^3.0.1",
+		"@sveltejs/vite-plugin-svelte": "^7.3.0",
+		"@types/estree": "^1.0.9",
+		"@types/mdast": "^4.0.4",
+		"@types/node": "^26.4.0",
+		"@vitest/coverage-v8": "^4.1.11",
+		"@vitest/ui": "^4.1.11",
+		"@vnphanquang/eslint-config": "^4.2.1",
+		"dedent": "^1.7.2",
+		"dts-buddy": "^0.8.3",
+		"eslint": "^10.9.1",
+		"eslint-plugin-jsdoc": "^64.2.1",
+		"mdast-util-from-markdown": "^2.0.3",
+		"npm-run-all": "^4.1.5",
+		"prettier": "^3.9.6",
+		"prettier-plugin-embed": "^0.5.1",
+		"prettier-plugin-svelte": "^4.1.1",
+		"publint": "^0.3.24",
+		"remark-enhance-codeblock": "^1.1.1",
+		"svelte": "^5.57.0",
+		"typescript": "^6.0.0",
+		"vite": "^8.2.2",
+		"vitest": "^4.1.11"
+	},
+	"peerDependencies": {
+		"svelte": ">=5.0.0"
+	},
+	"dependencies": {
+		"magic-string": "^1.2.3",
+		"rehype-stringify": "^10.0.1",
+		"remark-parse": "^11.0.0",
+		"remark-rehype": "^11.1.2",
+		"unified": "^11.0.5",
+		"unist-util-visit": "^5.1.0",
+		"zimmerframe": "^1.1.5"
+	},
+	"devEngines": {
+		"runtime": {
+			"name": "node",
+			"version": "24.16.0",
+			"onFail": "download"
+		},
+		"packageManager": {
+			"name": "pnpm",
+			"version": "^11.25.0",
+			"onFail": "download"
+		}
+	}
+}

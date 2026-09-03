@@ -1,0 +1,23 @@
+# dependencies
+node_modules
+
+# output
+coverage
+types/
+dist/
+
+# vite temp
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+.vitest-attachments/
+tests/__screenshots__/plugin.browser.test.ts
+
+# misc
+*.log*
+.DS_Store
+*.pem
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml

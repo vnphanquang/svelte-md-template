@@ -1,0 +1,5 @@
+allowBuilds:
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@vnphanquang/eslint-config'
+  - remark-enhance-codeblock
