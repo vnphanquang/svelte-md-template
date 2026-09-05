@@ -1,0 +1,11 @@
+{
+	"$schema": "https://raw.githubusercontent.com/changesets/changesets/refs/heads/main/packages/config/schema.json",
+	"changelog": [
+		"@changesets/changelog-github",
+		{ "repo": "vnphanquang/svelte-md-template" }
+	],
+	"access": "public",
+	"baseBranch": "main",
+	"format": false
+}
+
