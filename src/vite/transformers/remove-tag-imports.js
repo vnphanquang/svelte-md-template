@@ -7,18 +7,18 @@ import { walk } from 'zimmerframe';
  */
 
 /**
- * @typedef RemoveTemplateImportsInput
+ * @typedef RemoveTagImportsInput
  * @property {import('magic-string').MagicString} s
  * @property {import('svelte/compiler').AST.Root} ast
- * @property {string} [templateSource]
+ * @property {string} [importSource]
  */
 
 /**
- * @param {RemoveTemplateImportsInput} input
- * @returns {string[]} names of imported template
+ * @param {RemoveTagImportsInput} input
+ * @returns {string[]} names of imported tags
  */
-export function removeTemplateImports(input) {
-	const { s, ast, templateSource = 'svelte-md-template' } = input;
+export function removeTagImports(input) {
+	const { s, ast, importSource = 'svelte-md-template' } = input;
 
 	/** @type {string[]} */
 	const names = [];
@@ -27,7 +27,7 @@ export function removeTemplateImports(input) {
 		if (!script) continue;
 		walk(/** @type {import('estree').Node & Position}  */ (/** @type {unknown} */ (script)), null, {
 			ImportDeclaration(node, { next }) {
-				if (node.source.value !== templateSource) return next();
+				if (node.source.value !== importSource) return next();
 				for (const specifier of node.specifiers) {
 					names.push(specifier.local.name);
 				}

@@ -1,6 +1,12 @@
+/* eslint-disable jsdoc/reject-any-type */
+
 import { walk } from 'zimmerframe';
 
-const SEGMENT_MARKER = '<!-- END_SEGMENT -->';
+const DELIMITER = '<!-- SVELTE_MD -->';
+
+/**
+ * @typedef {(templates: string[]) => string[] | Promise<string[]>} Transform
+ */
 
 /**
  * @typedef Position
@@ -21,8 +27,8 @@ function nodeWithPosition(node) {
  * @typedef TransformMarkdownInput
  * @property {import('magic-string').MagicString} s
  * @property {import('svelte/compiler').AST.Root} ast
- * @property {string[]} templates
- * @property {(markdown: string) => string | Promise<string>} transform
+ * @property {string[]} tags
+ * @property {Transform} transform
  */
 
 /**
@@ -30,9 +36,10 @@ function nodeWithPosition(node) {
  * @returns {Promise<void>}
  */
 export async function transformMarkdown(input) {
-	const { s, ast, templates, transform } = input;
+	const { s, ast, tags, transform } = input;
 
-	let merged = '';
+	/** @type {string[]} */
+	const templates = [];
 	/** @type {Position[]} */
 	const positions = [];
 
@@ -45,7 +52,7 @@ export async function transformMarkdown(input) {
 			ExpressionTag(node, { next }) {
 				const expression = node.expression;
 				if (expression.type !== 'TaggedTemplateExpression') return next();
-				if (expression.tag.type !== 'Identifier' || !templates.includes(expression.tag.name))
+				if (expression.tag.type !== 'Identifier' || !tags.includes(expression.tag.name))
 					return next();
 				positions.push({ start: node.start, end: node.end });
 
@@ -56,18 +63,33 @@ export async function transformMarkdown(input) {
 					s.remove(start - 2, start - 1);
 				}
 
+				// TODO: escape {...} since it will be mistakenly registered as Svelte expression after the
+				// transformation
+
 				const quasiLoc = nodeWithPosition(expression.quasi);
-				merged += s.slice(quasiLoc.start + 1, quasiLoc.end - 1) + `\n\n${SEGMENT_MARKER}\n\n`;
+				templates.push(s.slice(quasiLoc.start + 1, quasiLoc.end - 1));
 			},
 		},
 	);
 
-	const transformed = await transform(merged);
-	const chunks = transformed.trim().split(SEGMENT_MARKER);
-	for (let i = 0; i < chunks.length; i++) {
-		const chunk = chunks[i];
-		if (!chunk) continue;
+	// return early if no template is detected
+	if (!templates.length) return;
+
+	const replacements = await transform(templates);
+	for (let i = 0; i < replacements.length; i++) {
 		const { start, end } = positions[i];
-		s.overwrite(start, end, chunk);
+		s.overwrite(start, end, replacements[i]);
 	}
+}
+
+/**
+ * @param {import('unified').Processor<any, any, any, any, any>} processor
+ * @returns {Transform}
+ */
+export function createUnifiedTransform(processor) {
+	return async function (templates) {
+		const merged = templates.join(`\n\n${DELIMITER}\n\n`);
+		const transformed = (await processor.process(merged)).toString().trim();
+		return transformed.split(DELIMITER);
+	};
 }

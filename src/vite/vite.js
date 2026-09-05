@@ -3,16 +3,14 @@
 import { MagicString } from 'magic-string';
 import { parse } from 'svelte/compiler';
 
-import { removeTemplateImports } from './transformers/remove-template-imports.js';
-import { transformMarkdown } from './transformers/transform-markdown.js';
+import { removeTagImports } from './transformers/remove-tag-imports.js';
+import { createUnifiedTransform, transformMarkdown } from './transformers/transform-markdown.js';
 
 /**
  * @param {import('./types.public').SvelteMdTemplateOptions} [options]
  * @returns {Promise<import('vite').Plugin>}
  */
 export async function svelteMdTemplate(options) {
-	const templateSource = 'svelte-md-template';
-
 	/** @type {import('./types.public').FilterIdSpecs | null} */
 	let svelteIdFilter = null;
 	return {
@@ -35,7 +33,11 @@ export async function svelteMdTemplate(options) {
 				const s = new MagicString(code);
 				const ast = parse(code, { modern: true, filename: id });
 
-				const templates = removeTemplateImports({ s, ast, templateSource });
+				const tags = removeTagImports({
+					s,
+					ast,
+					importSource: options?.importSource ?? 'svelte-md-template',
+				});
 
 				/** @type {import('./transformers/transform-markdown').TransformMarkdownInput['transform']} */
 				let transform;
@@ -43,21 +45,34 @@ export async function svelteMdTemplate(options) {
 					transform = options.transformer.transform;
 				} else {
 					/** @type {any} */
-					let processor = (await import('unified'))
-						.unified()
-						.use((await import('remark-parse')).default);
-					let newProcessor = options?.transformer?.processor?.(processor);
-					if (newProcessor === processor || !newProcessor) {
-						processor = processor
-							.use((await import('remark-rehype')).default, { allowDangerousHtml: true })
-							.use((await import('rehype-stringify')).default, { allowDangerousHtml: true });
+					let processor;
+					if (options?.transformer && 'processor' in options.transformer) {
+						processor = options.transformer.processor;
 					} else {
-						processor = newProcessor;
+						/** @type {import('unified').PluggableList} */
+						let remarkPlugins = [];
+						/** @type {import('unified').PluggableList} */
+						let rehypePlugins = [];
+
+						if (options?.transformer) {
+							({ remarkPlugins = [], rehypePlugins = [] } =
+								/** @type {import('./types.public').SvelteMdTemplateTransformerUnifiedWithPlugins} */ (
+									options.transformer
+								));
+						}
+
+						processor = (await import('unified'))
+							.unified()
+							.use((await import('remark-parse')).default)
+							.use(remarkPlugins)
+							.use((await import('remark-rehype')).default, { allowDangerousHtml: true })
+							.use(rehypePlugins)
+							.use((await import('rehype-stringify')).default, { allowDangerousHtml: true });
 					}
-					transform = async (str) => (await processor.process(str)).toString();
+					transform = createUnifiedTransform(processor);
 				}
 
-				await transformMarkdown({ s, ast, templates, transform });
+				await transformMarkdown({ s, ast, tags, transform });
 
 				return {
 					code: s.toString(),

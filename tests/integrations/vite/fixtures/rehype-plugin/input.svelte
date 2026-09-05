@@ -2,5 +2,4 @@
 	import { markdown } from 'svelte-md-template';
 </script>
 
-{markdown`## Section 1`}
-{markdown`## Section 2`}
+{markdown`To be wrapped inside a document`}

@@ -1,9 +1,12 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-import { remarkEnhanceCodeblock } from 'remark-enhance-codeblock';
+import rehypeDocument from 'rehype-document';
+import remarkEnhanceCodeblock from 'remark-enhance-codeblock';
 import { expect, test } from 'vitest';
+import MarkdownIt from 'markdown-it';
 
+import { definePlugin } from '../../../src/unified';
 import { buildWithVite, createMinimalProcessor, formatHtmlWithPrettier } from '../../test-utils';
 
 test('can transform typical Common-Mark syntax', async () => {
@@ -29,13 +32,34 @@ test('can add remark plugin', async () => {
 		{
 			transformer: {
 				type: 'unified',
-				processor: (unified) => unified.use(remarkEnhanceCodeblock),
+				remarkPlugins: [definePlugin(remarkEnhanceCodeblock)],
 			},
 		},
 	);
 	const formatted = await formatHtmlWithPrettier(built);
 	const expected = await readFile(
 		resolve(import.meta.dirname, './fixtures/remark-plugin/output.html'),
+		'utf-8',
+	);
+	expect(formatted).toBe(expected);
+});
+
+test('can add rehype plugin', async () => {
+	const built = await buildWithVite(
+		{
+			root: resolve(import.meta.dirname, './fixtures/rehype-plugin'),
+			input: resolve(import.meta.dirname, './fixtures/rehype-plugin/input.svelte'),
+		},
+		{
+			transformer: {
+				type: 'unified',
+				rehypePlugins: [definePlugin(rehypeDocument, { language: 'vi' })],
+			},
+		},
+	);
+	const formatted = await formatHtmlWithPrettier(built);
+	const expected = await readFile(
+		resolve(import.meta.dirname, './fixtures/rehype-plugin/output.html'),
 		'utf-8',
 	);
 	expect(formatted).toBe(expected);
@@ -50,7 +74,7 @@ test('can override unified processor', async () => {
 		{
 			transformer: {
 				type: 'unified',
-				processor: () => createMinimalProcessor(),
+				processor: createMinimalProcessor(),
 			},
 		},
 	);
@@ -71,7 +95,13 @@ test('can use custom transformer', async () => {
 		{
 			transformer: {
 				type: 'custom',
-				transform: () => '<h1>Custom Transformer</h1>',
+				transform: function (templates: string[]) {
+					const delimiter = '<!-- SVELTE_MD -->';
+					const merged = templates.join(`\n\n${delimiter}\n\n`);
+					const md = new MarkdownIt({ html: true });
+					const transformed = md.render(merged);
+					return transformed.split(delimiter);
+				},
 			},
 		},
 	);

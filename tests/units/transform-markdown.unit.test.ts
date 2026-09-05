@@ -1,13 +1,13 @@
 import { expect, test } from 'vitest';
 
-import { transformMarkdown } from '../../src/vite/transformers/transform-markdown';
+import {
+	createUnifiedTransform,
+	transformMarkdown,
+} from '../../src/vite/transformers/transform-markdown';
 import { createMinimalProcessor, fromSvelte, svelte } from '../test-utils';
 
-async function transform(code: string) {
-	const processor = createMinimalProcessor();
-	return (await processor.process(code)).toString();
-}
-const templates = ['markdown'];
+const transform = createUnifiedTransform(createMinimalProcessor());
+const tags = ['markdown'];
 
 test('can transform markdown from tagged template expression', async () => {
 	const code = svelte`
@@ -19,7 +19,7 @@ test('can transform markdown from tagged template expression', async () => {
 	`;
 
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, templates, transform });
+	await transformMarkdown({ ...input, tags, transform });
 
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
@@ -44,7 +44,7 @@ test('can preserve position', async () => {
 	`;
 
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, templates, transform });
+	await transformMarkdown({ ...input, tags, transform });
 
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
@@ -72,7 +72,7 @@ test('can reference each other', async () => {
 	`;
 
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, templates, transform });
+	await transformMarkdown({ ...input, tags, transform });
 
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
@@ -83,17 +83,23 @@ test('can reference each other', async () => {
 	`);
 });
 
+test('shoud skip empty input', async () => {
+	const input = fromSvelte('');
+	await transformMarkdown({ ...input, tags, transform });
+	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation('');
+});
+
 test('shoud skip expression tags that are not tagged template', async () => {
 	const code = svelte`<p>{'Should skip'}</p>`;
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, templates, transform });
+	await transformMarkdown({ ...input, tags, transform });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(code);
 });
 
 test('shoud skip tagged template expression that does not match template names', async () => {
 	const code = svelte`<p>{sql\`SELECT * FROM users\`}</p>`;
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, templates, transform });
+	await transformMarkdown({ ...input, tags, transform });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(code);
 });
 
@@ -107,7 +113,7 @@ test('should remove $ from expressions', async () => {
 		{markdown\`# Use \${foo} variable\`}
 	`;
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, templates, transform });
+	await transformMarkdown({ ...input, tags, transform });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
 	  import { markdown } from 'svelte-md-template';

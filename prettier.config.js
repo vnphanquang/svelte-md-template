@@ -9,8 +9,8 @@ export default {
 	overrides: [
 		{ files: '**/*.yaml', options: { proseWrap: 'always' } },
 		{
-			files: '**/*.svelte',
-			options: /** @type {import('prettier-plugin-embed').PrettierPluginEmbedOptions} */ ({
+			files: ['**/*.svelte', 'README.md'],
+			options: /** @satisfies {import('prettier-plugin-embed').PrettierPluginEmbedOptions} */ ({
 				embeddedMarkdownTags: ['markdown'],
 				noEmbeddedMultiLineIndentation: ['markdown'],
 			}),
