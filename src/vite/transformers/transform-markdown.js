@@ -55,17 +55,6 @@ export async function transformMarkdown(input) {
 				if (expression.tag.type !== 'Identifier' || !tags.includes(expression.tag.name))
 					return next();
 				positions.push({ start: node.start, end: node.end });
-
-				// remove `$` in expressions,
-				// so that they are registered correctly in Svelte markup afterwards
-				for (const exp of expression.quasi.expressions) {
-					const { start } = nodeWithPosition(exp);
-					s.remove(start - 2, start - 1);
-				}
-
-				// TODO: escape {...} since it will be mistakenly registered as Svelte expression after the
-				// transformation
-
 				const quasiLoc = nodeWithPosition(expression.quasi);
 				templates.push(s.slice(quasiLoc.start + 1, quasiLoc.end - 1));
 			},
@@ -78,7 +67,12 @@ export async function transformMarkdown(input) {
 	const replacements = await transform(templates);
 	for (let i = 0; i < replacements.length; i++) {
 		const { start, end } = positions[i];
-		s.overwrite(start, end, replacements[i]);
+		const replacement = replacements[i]
+			// escape {...} otherwise will be registered as Svelte ExpressionTag afterwards
+			.replace(/(?<!\$)\{/g, '&lbrace;')
+			// so that they are registered correctly as Svelte ExpressionTag afterwards
+			.replace(/\$\{/g, '{');
+		s.overwrite(start, end, replacement);
 	}
 }
 

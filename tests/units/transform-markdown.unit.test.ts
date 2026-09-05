@@ -122,3 +122,28 @@ test('should remove $ from expressions', async () => {
 	<h1>Use {foo} variable</h1>
 	`);
 });
+
+test('should escape curly brace', async () => {
+	const code = svelte`
+		<script>
+			import { markdown } from 'svelte-md-template';
+		</script>
+
+		{markdown\`
+{not-expression}, {another-not-expression}
+
+~~~
+console.log({ foo: 'bar' });
+~~~
+		\`}
+	`;
+	const input = fromSvelte(code);
+	await transformMarkdown({ ...input, tags, transform });
+	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
+	<script>
+	  import { markdown } from 'svelte-md-template';
+	</script>
+	<p>&lbrace;not-expression}, &lbrace;another-not-expression}</p>
+	<pre><code>console.log(&lbrace; foo: 'bar' });</code></pre>
+	`);
+});
