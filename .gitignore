@@ -10,7 +10,6 @@ dist/
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vitest-attachments/
-tests/__screenshots__/plugin.browser.test.ts
 
 # misc
 *.log*

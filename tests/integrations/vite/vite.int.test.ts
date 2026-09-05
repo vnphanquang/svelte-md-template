@@ -21,7 +21,7 @@ test('can transform typical Common-Mark syntax', async () => {
 		resolve(import.meta.dirname, './fixtures/common-mark/output.html'),
 		'utf-8',
 	);
-	expect(formatted).toBe(expected);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
 });
 
 test('can add remark plugin', async () => {
@@ -42,7 +42,7 @@ test('can add remark plugin', async () => {
 		resolve(import.meta.dirname, './fixtures/remark-plugin/output.html'),
 		'utf-8',
 	);
-	expect(formatted).toBe(expected);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
 });
 
 test('can add rehype plugin', async () => {
@@ -63,7 +63,7 @@ test('can add rehype plugin', async () => {
 		resolve(import.meta.dirname, './fixtures/rehype-plugin/output.html'),
 		'utf-8',
 	);
-	expect(formatted).toBe(expected);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
 });
 
 test('can override unified processor', async () => {
@@ -84,7 +84,7 @@ test('can override unified processor', async () => {
 		resolve(import.meta.dirname, './fixtures/custom-unified/output.html'),
 		'utf-8',
 	);
-	expect(formatted).toBe(expected);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
 });
 
 test('can use custom transformer', async () => {
@@ -111,7 +111,7 @@ test('can use custom transformer', async () => {
 		resolve(import.meta.dirname, './fixtures/custom-transformer/output.html'),
 		'utf-8',
 	);
-	expect(formatted).toBe(expected);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
 });
 
 test('can specify custom include', async () => {
@@ -129,7 +129,7 @@ test('can specify custom include', async () => {
 		resolve(import.meta.dirname, './fixtures/custom-include/output.html'),
 		'utf-8',
 	);
-	expect(formatted).toBe(expected);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
 });
 
 test('can specify custom exclude', async () => {

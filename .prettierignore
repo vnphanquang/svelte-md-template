@@ -1,4 +1,2 @@
 node_modules/
 pnpm-lock.yaml
-*.svg
-tests/fixtures/examples/7-trim.md

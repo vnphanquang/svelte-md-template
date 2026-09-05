@@ -12,9 +12,9 @@
 		"allowSyntheticDefaultImports": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"types": ["vite/client", "node", "@vitest/browser-playwright"],
+		"types": ["vite/client", "node"],
 		"lib": ["DOM", "DOM.Iterable", "ESNext"]
 	},
-	"include": ["src/**/*", "tests/**/*", "playground/**/*"],
-	"exclude": ["node_modules", "tests/fixtures/**/*"]
+	"include": ["src/**/*", "tests/**/*"],
+	"exclude": ["node_modules"]
 }
