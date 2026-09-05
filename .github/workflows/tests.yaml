@@ -1,0 +1,56 @@
+name: Tests
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'vitest.config.ts'
+      - '.github/workflows/tests.yaml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'vitest.config.ts'
+      - '.github/workflows/tests.yaml'
+  workflow_dispatch:
+env:
+  CI: true
+jobs:
+  test:
+    if: github.repository == 'vnphanquang/svelte-md-template'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Run Tests
+        run: 'pnpm ci:test'
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          files: ./coverage/lcov.info
+          flags: ${{ runner.os }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
