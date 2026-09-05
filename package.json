@@ -57,8 +57,8 @@
 		"ci:test": "vitest run --coverage"
 	},
 	"devDependencies": {
-		"@changesets/changelog-github": "^1.0.0",
-		"@changesets/cli": "^3.0.1",
+		"@changesets/changelog-github": "^1.0.1",
+		"@changesets/cli": "^3.0.2",
 		"@sveltejs/vite-plugin-svelte": "^7.3.0",
 		"@types/estree": "^1.0.9",
 		"@types/mdast": "^4.0.4",
