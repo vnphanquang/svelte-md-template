@@ -1,0 +1,107 @@
+<!--[-->
+<h1>CommonMark 0.31.2 Feature Showcase</h1>
+<h2>Leaf Blocks</h2>
+<h3>Thematic Breaks</h3>
+<hr />
+<h3>Headings</h3>
+<p>ATX Headings:</p>
+<h1>H1</h1>
+<h2>H2</h2>
+<h3>H3</h3>
+<h4>H4</h4>
+<h5>H5</h5>
+<h6>H6</h6>
+<h1>Setext Headings</h1>
+<h2>Secondary Setext</h2>
+<h3>Indented Code Blocks</h3>
+<p>This is an indented code block. It requires 4 spaces of indentation.</p>
+<h3>Fenced Code Blocks</h3>
+<pre><code class="language-html">&lt;div>Fenced code block using backtick or tildes&lt;/div>
+</code></pre>
+<h3>HTML Blocks</h3>
+<div class="custom-block"><p>This is a raw HTML block recognized by CommonMark.</p></div>
+<h3>Paragraphs and Blank Lines</h3>
+<p>
+	This is a standard paragraph. Blank lines separate consecutive paragraphs and other block-level
+	elements.
+</p>
+<p>This is a new paragraph.</p>
+<hr />
+<h2>Container Blocks</h2>
+<h3>Blockquotes</h3>
+<blockquote>
+	<p>This is a blockquote.</p>
+	<blockquote><p>Nested blockquotes are also supported.</p></blockquote>
+	<p>You can have multiple paragraphs inside them.</p>
+</blockquote>
+<h3>Lists</h3>
+<p>Unordered Lists (can use `*`, `-`, or `+`):</p>
+<ul>
+	<li>Item 1</li>
+	<li>Item 2</li>
+</ul>
+<ul>
+	<li>Subitem A</li>
+</ul>
+<ul>
+	<li>Subitem B</li>
+</ul>
+<p>Ordered Lists (can use `.` or `)`):</p>
+<ol>
+	<li>First item</li>
+	<li>Second item</li>
+</ol>
+<ol>
+	<li>Sub-list using right parenthesis</li>
+	<li>Another sub-list item</li>
+</ol>
+<hr />
+<h2>Inlines</h2>
+<h3>Code Spans</h3>
+<p>
+	Use `` `backticks` `` to denote inline code. You can use `multiple backticks` to wrap code
+	containing a single backtick like `` ` ``.
+</p>
+<h3>Emphasis and Strong Emphasis</h3>
+<p>
+	<em>Emphasis using asterisks</em> or <em>emphasis using underscores</em>.
+	<strong>Strong emphasis using asterisks</strong> or
+	<strong>strong emphasis using underscores</strong>. <em><strong>Strong emphasis</strong></em> can
+	be combined.
+</p>
+<h3>Links</h3>
+<p>
+	<a href="https://commonmark.org" title="CommonMark Title">Inline link</a>
+	<a href="https://spec.commonmark.org/0.31.2" title="CommonMark Spec">Full Reference link</a>
+	<a href="https://commonmark.org">Shortcut Reference link</a>
+</p>
+<h3>Images</h3>
+<p>
+	<img
+		src="https://commonmark.org/help/images/favicon.png"
+		alt="Alt text for image"
+		title="Image Title"
+	/>
+	<a href="https://commonmark.org"
+		><img src="https://commonmark.org/help/images/favicon.png" alt="Linked Image"
+	/></a>
+</p>
+<h3>Autolinks</h3>
+<p>
+	<a href="https://commonmark.org">https://commonmark.org</a>
+	<a href="mailto:nobody@example.com">mailto:nobody@example.com</a>
+</p>
+<h3>Raw HTML (Inline)</h3>
+<p>Press <kbd>Enter</kbd> to submit.</p>
+<h3>Escapes &amp; Entities</h3>
+<p>
+	Backslash escapes allow literal characters: * _ [ ] # ` \ Entities are parsed correctly: © &amp; #
+	"
+</p>
+<h3>Line Breaks</h3>
+<p>This line contains a soft line break and wraps to the next line in the source.</p>
+<p>
+	This line ends with a hard line break using two trailing spaces. This line ends with a hard line
+	break using a backslash.And this is the final line.
+</p>
+<!--]-->
