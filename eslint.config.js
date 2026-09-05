@@ -29,7 +29,7 @@ const jsdocConfig = [
 
 export default await defineConfig(
 	{},
-	globalIgnores([gitignorePath, 'coverage/**/*.js', '**/dist/**/*.js']),
+	globalIgnores([gitignorePath, 'coverage/**/*.js', '**/dist/**/*.js', 'types/**/*']),
 	jsdocConfig,
 	{
 		files: ['**/*.js'],

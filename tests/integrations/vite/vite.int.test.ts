@@ -1,10 +1,11 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
+// eslint-disable-next-line import-x/no-named-as-default
+import MarkdownIt from 'markdown-it';
 import rehypeDocument from 'rehype-document';
 import remarkEnhanceCodeblock from 'remark-enhance-codeblock';
 import { expect, test } from 'vitest';
-import MarkdownIt from 'markdown-it';
 
 import { definePlugin } from '../../../src/unified';
 import { buildWithVite, createMinimalProcessor, formatHtmlWithPrettier } from '../../test-utils';
