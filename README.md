@@ -74,6 +74,52 @@ The output looks something like:
 </p>
 ```
 
+## Why?
+
+### Motivation
+
+Popular Markdown-in-Svelte solutions (that i know of) often mixes Svelte and Markdown syntax at the top level, usually with Svelte being secondary to Markdown
+And example with [mdsvex] is:
+
+```markdown
+<script>
+  import { Penguin } from '$lib/components';
+</script>
+
+# mdsvex
+
+svelte in markdown
+
+<Penguin walk={true} />
+```
+
+The same can be said with [vite-pulgin-svelte-md]. Such strateges work well for simple use cases. However, as i use them more extensively,
+especially for writing interative blog posts and documentation, some inconveniences started to surface:
+
+1. Toolings degrade, e.g. format / lint / highlight, because i would need to decide whether to treat the buffer as either Markdown or Svelte, neglecting support for the other.
+2. There are compatibility issues with Svelte syntax. For exampe, see
+   [vite-plugin-svelte-md > Svelte Compatibility](https://github.com/ota-meshi/vite-plugin-svelte-md#-svelte-compatibility),
+   or [mdsvex > issue 550 (enhance-img)](https://github.com/pngwn/MDsveX/issues/550).
+   As Svelte semantics evolve, maintaining compatibility may require significant effort.
+3. Upstream transformer is locked-in (e.g. [unified] or [markdown-it]), and the library often
+   implements more features where i don't need them, but not enough where i need so.
+
+[svelte-md-template] is my _naive_ take on a more explicit approach, utilising as much standard constructs as possible,
+keeping the full power of Svelte syntax. In a way, it is the reverse: Svelte-first, markdown as needed.
+"Naive" because i may be ignorant to the implications this approach has in practice.
+
+So far, it has served me well:
+
+1. good tooling support: markdown tagged templates are often picked-up for syntax-highligting / formatting. See [Recommended Prettier Config](#recommended-prettier-config), for example.
+2. minimal processing: the package source code is quite minimal, as it doesn't have to implement custom ASTs or complex parsing. Theoretically, fewer compatibility issues should arise, if at all.
+
+Of course, no solution is without tradeoffs. See [Tradeoffs & Caveats](#tradeoffs-caveats) for more information.
+
+### When to not Use This?
+
+When Markdown content only relies on basic syntax, e.g. [CommonMark Specs](https://spec.commonmark.org/), with little or no Svelte code,
+i recommend sticking to [mdsvex] or [vite-plugin-svelte-md] until you have an exact need that this package solves.
+
 ## Transformer
 
 Markdown-to-HTML transformation may be customised using the `transformer` option
@@ -291,10 +337,73 @@ If using an alias for the `markdown` template, adjust accordingly.
 > [!NOTE]
 > `noEmbeddedMultiLineIndentation` is to avoid indenting the code inside `` markdown`...` ``, which will be mistakenly picked up by syntax-highlight tooling as an indented code block.
 
+## Tradeoffs & Caveats
+
+The usage is, by design, explicit and verbose.
+
+### Escaping Backticks
+
+The most common inconvenience is that backtick has to be escaped:
+
+```svelte
+{markdown`
+Backticks, e.g. \`inline code\`, need to be escaped
+`}
+```
+
+For code blocks, use tidle, i.e `~`, to avoid so:
+
+```svelte
+{markdown`
+~~~javascript
+console.log('Hello, world!');
+~~~
+`}
+```
+
+### Escaping Expressions
+
+`${...}` is picked up as expected. For example, this input:
+
+```svelte
+<script>
+	const foo = 'bar';
+</script>
+
+{markdown`
+foo is ${foo}
+`}
+```
+
+...will output:
+
+```svelte
+<script>
+	const foo = 'bar';
+</script>
+
+<p>foo is {foo}</p>
+```
+
+If `${...}` is meant to be rendered as is, escape as `\${...}`. Similarly `{...}` will be escaped by default,
+otherwise it would be picked up as Svelte expression in the output. For example:
+
+```svelte
+{markdown`
+{static} is not an expression
+`}
+```
+
+Will be output as:
+
+```svelte
+<p>&lbrace;static} is not an expression</p>
+```
+
 ## Related Projects / Prior Arts
 
-- [mdsvex](https://github.com/pngwn/mdsvex)
-- [vite-plugin-svelte-md](https://github.com/ota-meshi/vite-plugin-svelte-md)
+- [mdsvex]
+- [vite-plugin-svelte-md]
 
 Some [remark] plugins I wrote that may be helpful:
 
@@ -311,6 +420,9 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.
 [built by human, not agents](https://gist.github.com/vnphanquang/018ee2b2080c9dc9890327f3d233998b).
 
 [npmx]: https://npmx.dev/package/svelte-md-template
+[markdown-it]: https://github.com/markdown-it/markdown-it
 [unified]: https://github.com/unifiedjs/unified
 [remark]: https://github.com/remarkjs/remark
 [rehype]: https://github.com/rehypejs/rehype
+[mdsvex]: https://github.com/pngwn/mdsvex
+[vite-plugin-svelte-md]: https://github.com/ota-meshi/vite-plugin-svelte-md
