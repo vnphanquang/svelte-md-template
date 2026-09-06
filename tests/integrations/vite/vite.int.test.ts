@@ -148,14 +148,14 @@ test('can specify custom exclude', async () => {
 	);
 });
 
-test('can escape properly', async () => {
+test('can handle expressions properly', async () => {
 	const built = await buildWithVite({
-		root: resolve(import.meta.dirname, './fixtures/escapes'),
-		input: resolve(import.meta.dirname, './fixtures/escapes/input.svelte'),
+		root: resolve(import.meta.dirname, './fixtures/expressions'),
+		input: resolve(import.meta.dirname, './fixtures/expressions/input.svelte'),
 	});
 	const formatted = await formatHtmlWithPrettier(built);
 	const expected = await readFile(
-		resolve(import.meta.dirname, './fixtures/escapes/output.html'),
+		resolve(import.meta.dirname, './fixtures/expressions/output.html'),
 		'utf-8',
 	);
 	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);

@@ -154,7 +154,7 @@ console.log({ foo: 'bar' });
 
 test('should ignore escaped expression', async () => {
 	const code = await fs.readFile(
-		path.resolve(import.meta.dirname, './fixtures/ignore-esacped-expression.input.svelte'),
+		path.resolve(import.meta.dirname, './fixtures/ignore-escaped-expression.input.svelte'),
 		'utf-8',
 	);
 	const input = fromSvelte(code);
@@ -164,5 +164,22 @@ test('should ignore escaped expression', async () => {
 	  import { markdown } from 'svelte-md-template';
 	</script>
 	<pre><code>console.log('foo: $&lbrace;bar}')</code></pre>
+	`);
+});
+
+test('should preserve expression in code elements', async () => {
+	const code = await fs.readFile(
+		path.resolve(import.meta.dirname, './fixtures/expression-in-code.input.svelte'),
+		'utf-8',
+	);
+	const input = fromSvelte(code);
+	await transformMarkdown({ ...input, tags, transform, id });
+	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
+	<script>
+	  import { markdown } from 'svelte-md-template';
+	  const foo = 'bar';
+	</script>
+	<p>foo is: {foo}</p>
+	<pre><code>foo is {foo}</code></pre>
 	`);
 });

@@ -12,7 +12,7 @@ console.log(\`\${foo}\`);
 
 {markdown`
 ~~~
-say ${hello} from variable
+say "${hello}" from variable
 ~~~
 `}
 
@@ -21,3 +21,13 @@ say ${hello} from variable
 {static} isn't a expression
 ~~~
 `}
+
+{markdown`
+hello: \`${hello}\`
+`}
+
+
+{markdown`
+not an expression: \`{static}\`
+`}
+
