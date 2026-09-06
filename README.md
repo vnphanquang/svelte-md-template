@@ -1,6 +1,6 @@
 # svelte-md-template
 
-transform markdown to html in Svelte files via explicit tagged template
+transform markdown to html in Svelte files via explicit [tagged template](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates)
 
 [![Open on npmx.dev](https://npmx.dev/api/registry/badge/version/svelte-md-template)][npmx]
 [![Open on npmx.dev](https://npmx.dev/api/registry/badge/vulnerabilities/svelte-md-template)][npmx]
@@ -78,8 +78,8 @@ The output looks something like:
 
 ### Motivation
 
-Popular Markdown-in-Svelte solutions (that i know of) often mixes Svelte and Markdown syntax at the top level, usually with Svelte being secondary to Markdown
-And example with [mdsvex] is:
+Popular Markdown-in-Svelte solutions (that i know of) often mixes Svelte and Markdown syntax at the top level, usually with Svelte being secondary to Markdown.
+An example with [mdsvex] is:
 
 ```markdown
 <script>
@@ -93,10 +93,10 @@ svelte in markdown
 <Penguin walk={true} />
 ```
 
-The same can be said with [vite-pulgin-svelte-md]. Such strateges work well for simple use cases. However, as i use them more extensively,
+The same can be said with [vite-plugin-svelte-md]. Such strateges work well for simple use cases. However, as i use them more extensively,
 especially for writing interative blog posts and documentation, some inconveniences started to surface:
 
-1. Toolings degrade, e.g. format / lint / highlight, because i would need to decide whether to treat the buffer as either Markdown or Svelte, neglecting support for the other.
+1. Toolings degrade, e.g. format / lint / highlight, because i would need to decide whether to treat the buffer as Markdown **or** Svelte, neglecting support for the other.
 2. There are compatibility issues with Svelte syntax. For exampe, see
    [vite-plugin-svelte-md > Svelte Compatibility](https://github.com/ota-meshi/vite-plugin-svelte-md#-svelte-compatibility),
    or [mdsvex > issue 550 (enhance-img)](https://github.com/pngwn/MDsveX/issues/550).
@@ -104,18 +104,18 @@ especially for writing interative blog posts and documentation, some inconvenien
 3. Upstream transformer is locked-in (e.g. [unified] or [markdown-it]), and the library often
    implements more features where i don't need them, but not enough where i need so.
 
-[svelte-md-template] is my _naive_ take on a more explicit approach, utilising as much standard constructs as possible,
-keeping the full power of Svelte syntax. In a way, it is the reverse: Svelte-first, markdown as needed.
+`svelte-md-template` is my _naive_ take on a more explicit approach, utilising as much standard constructs as possible,
+keeping the full power of Svelte syntax. In a way, it reverses the priority: Svelte-first, markdown as needed.
 "Naive" because i may be ignorant to the implications this approach has in practice.
 
 So far, it has served me well:
 
 1. good tooling support: markdown tagged templates are often picked-up for syntax-highligting / formatting. See [Recommended Prettier Config](#recommended-prettier-config), for example.
-2. minimal processing: the package source code is quite minimal, as it doesn't have to implement custom ASTs or complex parsing. Theoretically, fewer compatibility issues should arise, if at all.
+2. minimal processing: the package source code is quite minimal, as it doesn't have to maintain custom AST or complex parsing. Theoretically, fewer compatibility issues should arise, if at all.
 
 Of course, no solution is without tradeoffs. See [Tradeoffs & Caveats](#tradeoffs-caveats) for more information.
 
-### When to not Use This?
+### When to **not** Use This?
 
 When Markdown content only relies on basic syntax, e.g. [CommonMark Specs](https://spec.commonmark.org/), with little or no Svelte code,
 i recommend sticking to [mdsvex] or [vite-plugin-svelte-md] until you have an exact need that this package solves.
@@ -257,7 +257,8 @@ svelteMdTemplate({
 
 Note that, the `transform` function:
 
-- takes an array of strings, each corresponding to a `` markdown`...` `` template instance in the original Svelte file, and
+- takes an array of strings via the `templates` property, each corresponding to a `` markdown`...` ``
+  template instance in the original Svelte file, and,
 - is expected to return an array of strings matching the aforementioned order.
 
 ## Including / Excluding Files
@@ -270,7 +271,7 @@ import { svelteMdTemplate } from 'svelte-md-template';
 
 /// -------- Example --------
 svelteMdTemplate({
-	include: /\.svelte$/,
+	include: /\.md.svelte$/,
 	exclude: /\.no-md\.svelte$/,
 });
 
@@ -339,7 +340,8 @@ If using an alias for the `markdown` template, adjust accordingly.
 
 ## Tradeoffs & Caveats
 
-The usage is, by design, explicit and verbose.
+> [!NOTE]
+> The usage is, by design, explicit and verbose.
 
 ### Escaping Backticks
 
@@ -357,6 +359,24 @@ For code blocks, use tidle, i.e `~`, to avoid so:
 {markdown`
 ~~~javascript
 console.log('Hello, world!');
+~~~
+`}
+```
+
+Alternatively, backtick can be written in some variable / other file and loaded in as needed. For example, using
+[remark-codeblock-source](https://github.com/vnphanquang/remark-codeblock-source) to write code
+example in separate file:
+
+```svelte
+{markdown`
+~~~javascript src="fs:./examples/hello.js"
+
+~~~
+`}
+
+{markdown`
+~~~language src="github:account/:repo/:commit_or_branch/:filepath"
+
 ~~~
 `}
 ```
@@ -385,8 +405,9 @@ foo is ${foo}
 <p>foo is {foo}</p>
 ```
 
-If `${...}` is meant to be rendered as is, escape as `\${...}`. Similarly `{...}` will be escaped by default,
-otherwise it would be picked up as Svelte expression in the output. For example:
+If `${...}` is meant to be rendered as is, escape as `\${...}`.
+
+Similarly `{...}` will be escaped by default, otherwise it would be picked up as Svelte expression in the output. For example:
 
 ```svelte
 {markdown`
