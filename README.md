@@ -1,5 +1,7 @@
 # svelte-md-template
 
+transform markdown to html in Svelte files via explicit tagged template
+
 [![Open on npmx.dev](https://npmx.dev/api/registry/badge/version/svelte-md-template)][npmx]
 [![Open on npmx.dev](https://npmx.dev/api/registry/badge/vulnerabilities/svelte-md-template)][npmx]
 [![See on bundlephobia](https://npmx.dev/api/registry/badge/size/svelte-md-template)](https://bundlephobia.com/package/svelte-md-template)
@@ -44,7 +46,30 @@ export default defineConfig({
 # My Markdown Content
 
 Variable can be injected as expected: ${foo}
+All templates are merged, e.g. write [link-reference-definition] in one block and use in others.
 `}
+
+{markdown`
+[link-reference-definition]: https://spec.commonmark.org/0.31.2/#link-reference-definition
+`}
+```
+
+The output looks something like:
+
+```svelte
+<script>
+	const foo = 'bar';
+</script>
+
+<h1>My Markdown Content</h1>
+<p>Variable can be injected as expected: {foo}</p>
+<p>
+	All instances are merged, e.g. write
+	<a href="https://spec.commonmark.org/0.31.2/#link-reference-definition">
+		link-reference-definition
+	</a>
+	in one block and use in others.
+</p>
 ```
 
 ## Transformer
@@ -89,7 +114,7 @@ export type SvelteMdTemplateTransformerCustom = {
 
 ### [unified]
 
-By default, `svelteMdTemplate` uses a minimal [remark]-[reyhpe] processor:
+By default, `svelteMdTemplate` uses a minimal [remark]-[rehype] processor:
 
 ```javascript
 import { unified } from 'unified';
@@ -104,7 +129,7 @@ const processor = unified()
 ```
 
 The processor is permissive, i.e `allowDangerousHtml`, for convenience. Security may not be a major concern here since
-the markdown **_should_** be static at build time.
+markdown content **_should_** be static at build time.
 
 Some customisation recipes are listed in the next sub-sections.
 
@@ -114,6 +139,7 @@ Additional [remark] & [rehype] plugins can be added:
 
 ```typescript
 import { svelteMdTemplate } from 'svelte-md-template';
+
 svelteMdTemplate({
 	transformer: {
 		type: 'unified',
@@ -140,11 +166,12 @@ svelteMdTemplate({
 #### Providing a Custom unified Processor
 
 A completely custom [unified] pipeline can also be specified. This may be helpful to use a preset, pin specific versions,
-or when advanced options are required.
+or when advanced options are necessary.
 
 ```typescript
 import { svelteMdTemplate } from 'svelte-md-template';
 import { unified } from 'unified';
+
 svelteMdTemplate({
 	transformer: {
 		type: 'unified',
@@ -177,7 +204,7 @@ svelteMdTemplate({
 
 Note that, the `transform` function:
 
-- takes an array of strings, each corresponding to a `markdown\`\` template instance in the original Svelte file, and
+- takes an array of strings, each corresponding to a `` markdown`...` `` template instance in the original Svelte file, and
 - is expected to return an array of strings matching the aforementioned order.
 
 ## Including / Excluding Files
@@ -255,7 +282,7 @@ export default {
 If using an alias for the `markdown` template, adjust accordingly.
 
 > [!NOTE]
-> `noEmbeddedMultiLineIndentation` is to avoid indenting the code inside `markdown\`...\``, which will be mistakenly picked up by syntax-highlight tooling as an indented code block.
+> `noEmbeddedMultiLineIndentation` is to avoid indenting the code inside `` markdown`...` ``, which will be mistakenly picked up by syntax-highlight tooling as an indented code block.
 
 ## Related Projects / Prior Arts
 
