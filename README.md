@@ -18,7 +18,7 @@ pnpm add -D svelte-md-template
 
 ## Usage
 
-Add the vite plugin
+Add the vite plugin:
 
 ```javascript
 /// vite.config.js
@@ -56,7 +56,7 @@ All templates are merged, e.g. write [link-reference-definition] in one block an
 `}
 ```
 
-The output looks something like:
+The intermediate Svelte code looks something like:
 
 ```svelte
 <script>
@@ -78,8 +78,7 @@ The output looks something like:
 
 ### Motivation
 
-Popular Markdown-in-Svelte solutions (that i know of) often mixes Svelte and Markdown syntax at the top level, usually with Svelte being secondary to Markdown.
-An example with [mdsvex] is:
+Popular Markdown-in-Svelte solutions (that i know of) often mixes Svelte and Markdown syntax at the top level. An example with [mdsvex] is:
 
 ```markdown
 <script>
@@ -93,8 +92,8 @@ svelte in markdown
 <Penguin walk={true} />
 ```
 
-The same can be said with [vite-plugin-svelte-md]. Such strateges work well for simple use cases. However, as i use them more extensively,
-especially for writing interative blog posts and documentation, some inconveniences started to surface:
+The same can be said with [vite-plugin-svelte-md]. Such strategies work well for simple use cases. However, as i use them more extensively,
+especially for writing interative blog posts and documentation, some inconveniences start to surface:
 
 1. Toolings degrade, e.g. format / lint / highlight, because i would need to decide whether to treat the buffer as Markdown **or** Svelte, neglecting support for the other.
 2. There are compatibility issues with Svelte syntax. For exampe, see
@@ -104,20 +103,27 @@ especially for writing interative blog posts and documentation, some inconvenien
 3. Upstream transformer is locked-in (e.g. [unified] or [markdown-it]), and the library often
    implements more features where i don't need them, but not enough where i need so.
 
-`svelte-md-template` is my _naive_ take on a more explicit approach, utilising as much standard constructs as possible,
-keeping the full power of Svelte syntax. In a way, it reverses the priority: Svelte-first, markdown as needed.
+`svelte-md-template` is my _naive_ take on a more explicit, minimal, and customisable approach,
+utilising as much standard constructs as possible, In a way, it reverses the priority: Svelte-first, markdown as needed.
 "Naive" because i may be ignorant to the implications this approach has in practice.
 
 So far, it has served me well:
 
-1. good tooling support: markdown tagged templates are often picked-up for syntax-highligting / formatting. See [Recommended Prettier Config](#recommended-prettier-config), for example.
-2. minimal processing: the package source code is quite minimal, as it doesn't have to maintain custom AST or complex parsing. Theoretically, fewer compatibility issues should arise, if at all.
+1. good tooling support: `markdown` tagged templates are often automatically picked up for syntax-highligting / formatting,
+   or can be specified so in LSP / formatter settings.
+   See [Recommended Prettier Config](#recommended-prettier-config) for an example;
+2. minimal processing: the package footprint is quite small, as it doesn't have to maintain custom AST or complex parsing.
+   Theoretically, fewer compatibility issues should arise, if at all.
+
+> [!NOTE]
+> Disclaimer: small footprint does not necessarily means more optimised. I have not done any
+> benchmark against other tools.
 
 Of course, no solution is without tradeoffs. See [Tradeoffs & Caveats](#tradeoffs-caveats) for more information.
 
 ### When to **not** Use This?
 
-When Markdown content only relies on basic syntax, e.g. [CommonMark Specs](https://spec.commonmark.org/), with little or no Svelte code,
+When content only relies on basic syntax, e.g. [CommonMark Specs](https://spec.commonmark.org/), with little or no Svelte code,
 i recommend sticking to [mdsvex] or [vite-plugin-svelte-md] until you have an exact need that this package solves.
 
 ## Transformer
@@ -202,12 +208,13 @@ svelteMdTemplate({
 });
 ```
 
-There is a `definePlugin` helper to provide typescript support when adding plugins:
+There is a `definePlugin` helper to provide typescript support for plugin options:
 
 ```typescript
 import { svelteMdTemplate } from 'svelte-md-template';
 import { definePlugin } from 'svelte-md-template/unified';
 import remarkEnhanceCodeblock from 'remark-enhance-codeblock';
+
 svelteMdTemplate({
 	transformer: {
 		type: 'unified',
@@ -218,7 +225,7 @@ svelteMdTemplate({
 
 #### Providing a Custom unified Processor
 
-A completely custom [unified] pipeline can also be specified. This may be helpful to use a preset, pin specific versions,
+A completely custom [unified] pipeline can be specified. This may be helpful to use a preset, pin specific versions,
 or when advanced options are necessary.
 
 ```typescript
@@ -307,7 +314,7 @@ svelteMdTemplate({
 
 ## Recommended Prettier Config
 
-Make sure necessary prettier plugins are installed
+Make sure necessary prettier plugins are installed:
 
 ```bash
 pnpm add -D prettier-plugin-embed prettier-plugin-svelte
@@ -320,6 +327,7 @@ Configure prettier to format Markdown code inside Svelte files:
 
 /** @type {import('prettier').Config} */
 export default {
+	/* your regular options here */
 	plugins: ['prettier-plugin-embed', 'prettier-plugin-svelte'],
 	overrides: [
 		{
@@ -363,9 +371,8 @@ console.log('Hello, world!');
 `}
 ```
 
-Alternatively, backtick can be written in some variable / other file and loaded in as needed. For example, using
-[remark-codeblock-source](https://github.com/vnphanquang/remark-codeblock-source) to write code
-example in separate file:
+Alternatively, content containing a lot of backticks can be written in some variable / other file and loaded in as needed.
+For example, using [remark-codeblock-source](https://github.com/vnphanquang/remark-codeblock-source) to write code example in separate file:
 
 ```svelte
 {markdown`
@@ -395,7 +402,7 @@ foo is ${foo}
 `}
 ```
 
-...will output:
+...will be transformed to:
 
 ```svelte
 <script>
@@ -407,7 +414,7 @@ foo is ${foo}
 
 If `${...}` is meant to be rendered as is, escape as `\${...}`.
 
-Similarly `{...}` will be escaped by default, otherwise it would be picked up as Svelte expression in the output. For example:
+Similarly `{...}` will be escaped by default, otherwise it would be picked up as Svelte expression in the output. For example, this input:
 
 ```svelte
 {markdown`
@@ -415,7 +422,7 @@ Similarly `{...}` will be escaped by default, otherwise it would be picked up as
 `}
 ```
 
-Will be output as:
+...will be be transformed to:
 
 ```svelte
 <p>&lbrace;static} is not an expression</p>
