@@ -25,8 +25,8 @@ expect.extend({
 			pass,
 			message: () =>
 				`${matcherHint('toBeIgnoringNewlineAndIndentation')}\n\n` +
-				`Expected: ${isNot ? 'not ' : ''}${printExpected(e)}\n` +
-				`Received: ${printReceived(r)}`,
+				`Expected: ${isNot ? 'not ' : ''}${printExpected(expected)}\n` +
+				`Received: ${printReceived(received)}`,
 		};
 	},
 });

@@ -147,3 +147,16 @@ test('can specify custom exclude', async () => {
 		'This markdown template was not processed at build time. Make sure the vite plugin is set up correctly.',
 	);
 });
+
+test('can escape properly', async () => {
+	const built = await buildWithVite({
+		root: resolve(import.meta.dirname, './fixtures/escapes'),
+		input: resolve(import.meta.dirname, './fixtures/escapes/input.svelte'),
+	});
+	const formatted = await formatHtmlWithPrettier(built);
+	const expected = await readFile(
+		resolve(import.meta.dirname, './fixtures/escapes/output.html'),
+		'utf-8',
+	);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
+});

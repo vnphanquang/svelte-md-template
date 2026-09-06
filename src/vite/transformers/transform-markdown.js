@@ -54,9 +54,36 @@ export async function transformMarkdown(input) {
 				if (expression.type !== 'TaggedTemplateExpression') return next();
 				if (expression.tag.type !== 'Identifier' || !tags.includes(expression.tag.name))
 					return next();
+
 				positions.push({ start: node.start, end: node.end });
 				const quasiLoc = nodeWithPosition(expression.quasi);
-				templates.push(s.slice(quasiLoc.start + 1, quasiLoc.end - 1));
+				const template = s.snip(quasiLoc.start + 1, quasiLoc.end - 1);
+
+				for (const quasis of expression.quasi.quasis) {
+					const {
+						start,
+						end,
+						value: { cooked },
+					} = nodeWithPosition(quasis);
+					if (cooked) {
+						// FIXME: add test case to trigger else path for this
+						const escaped = cooked
+							// escape {...} otherwise will be registered as Svelte ExpressionTag afterwards
+							// we mark only, then escape after `transform` has run to avoid conflict, e.g.
+							// remark-rehyp will convert `&` to `&#x26;`
+							.replace(/{/g, '!ESCAPE!{');
+						template.update(start, end, escaped);
+					}
+				}
+
+				// remove $ from expression, i.e ${...}, so that they are registered correctly as
+				// Svelte ExpressionTag afterwards
+				for (const exp of expression.quasi.expressions) {
+					const { start } = nodeWithPosition(exp);
+					template.remove(start - 2, start - 1);
+				}
+
+				templates.push(template.toString());
 			},
 		},
 	);
@@ -67,12 +94,8 @@ export async function transformMarkdown(input) {
 	const replacements = await transform(templates);
 	for (let i = 0; i < replacements.length; i++) {
 		const { start, end } = positions[i];
-		const replacement = replacements[i]
-			// escape {...} otherwise will be registered as Svelte ExpressionTag afterwards
-			.replace(/(?<!\$)\{/g, '&lbrace;')
-			// so that they are registered correctly as Svelte ExpressionTag afterwards
-			.replace(/\$\{/g, '{');
-		s.overwrite(start, end, replacement);
+		const replacement = replacements[i].replaceAll('!ESCAPE!{', () => '&lbrace;');
+		s.update(start, end, replacement);
 	}
 }
 

@@ -1,3 +1,6 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
 import { expect, test } from 'vitest';
 
 import {
@@ -145,5 +148,20 @@ console.log({ foo: 'bar' });
 	</script>
 	<p>&lbrace;not-expression}, &lbrace;another-not-expression}</p>
 	<pre><code>console.log(&lbrace; foo: 'bar' });</code></pre>
+	`);
+});
+
+test('should ignore escaped expression', async () => {
+	const code = await fs.readFile(
+		path.resolve(import.meta.dirname, './fixtures/ignore-esacped-expression.input.svelte'),
+		'utf-8',
+	);
+	const input = fromSvelte(code);
+	await transformMarkdown({ ...input, tags, transform });
+	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
+	<script>
+	  import { markdown } from 'svelte-md-template';
+	</script>
+	<pre><code>console.log('foo: $&lbrace;bar}')</code></pre>
 	`);
 });
