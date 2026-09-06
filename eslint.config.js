@@ -32,6 +32,11 @@ export default await defineConfig(
 	globalIgnores([gitignorePath, 'coverage/**/*.js', '**/dist/**/*.js', 'types/**/*']),
 	jsdocConfig,
 	{
+		rules: {
+			'import-x/no-duplicates': 'off',
+		},
+	},
+	{
 		files: ['**/*.js'],
 		rules: {
 			'import-x/extensions': [

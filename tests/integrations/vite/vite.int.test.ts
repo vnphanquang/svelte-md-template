@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 // eslint-disable-next-line import-x/no-named-as-default
 import MarkdownIt from 'markdown-it';
 import rehypeDocument from 'rehype-document';
+import remarkCodeblockSource from 'remark-codeblock-source';
+import { fs } from 'remark-codeblock-source/resolvers';
 import remarkEnhanceCodeblock from 'remark-enhance-codeblock';
 import { expect, test } from 'vitest';
 
@@ -40,6 +42,27 @@ test('can add remark plugin', async () => {
 	const formatted = await formatHtmlWithPrettier(built);
 	const expected = await readFile(
 		resolve(import.meta.dirname, './fixtures/remark-plugin/output.html'),
+		'utf-8',
+	);
+	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
+});
+
+test('is compatible with remark-codeblock-source', async () => {
+	const built = await buildWithVite(
+		{
+			root: resolve(import.meta.dirname, './fixtures/remark-codeblock-source'),
+			input: resolve(import.meta.dirname, './fixtures/remark-codeblock-source/input.svelte'),
+		},
+		{
+			transformer: {
+				type: 'unified',
+				remarkPlugins: [definePlugin(remarkCodeblockSource, { resolvers: { fs: fs() } })],
+			},
+		},
+	);
+	const formatted = await formatHtmlWithPrettier(built);
+	const expected = await readFile(
+		resolve(import.meta.dirname, './fixtures/remark-codeblock-source/output.html'),
 		'utf-8',
 	);
 	expect(formatted).toBeIgnoringNewlineAndIndentation(expected);
