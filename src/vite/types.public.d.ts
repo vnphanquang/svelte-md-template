@@ -16,12 +16,23 @@ export type SvelteMdTemplateTransformerUnified = {
 };
 export type SvelteMdTemplateTransformerCustom = {
 	type: 'custom';
+	transform: SvelteMdTemplateTransform;
+};
+
+export interface SvelteMdTemplateTransform {
 	/**
-	 * take input as an array of markdown content as they appear from the original Svelte file,
+	 * take input containing an array of markdown content as they appear from the original Svelte file,
 	 * and expect an array of HTML string output, in the same order
 	 */
-	transform: (templates: string[]) => string[] | Promise<string[]>;
-};
+	(input: SvelteMdTemplateTransformInput): string[] | Promise<string[]>;
+}
+
+export interface SvelteMdTemplateTransformInput {
+	/** `id` from vite transform handler, often the path to current file, unless is a virtual file */
+	id?: string;
+	/** array of markdown content as they appear from the original Svelte file in tagged templates */
+	templates: string[];
+}
 
 type SvelteMdTemplateTransformer =
 	| SvelteMdTemplateTransformerUnifiedWithPlugins

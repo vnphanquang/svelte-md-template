@@ -1,12 +1,9 @@
 /* eslint-disable jsdoc/reject-any-type */
 
+import { VFile } from 'vfile';
 import { walk } from 'zimmerframe';
 
 const DELIMITER = '<!-- SVELTE_MD -->';
-
-/**
- * @typedef {(templates: string[]) => string[] | Promise<string[]>} Transform
- */
 
 /**
  * @typedef Position
@@ -28,7 +25,8 @@ function nodeWithPosition(node) {
  * @property {import('magic-string').MagicString} s
  * @property {import('svelte/compiler').AST.Root} ast
  * @property {string[]} tags
- * @property {Transform} transform
+ * @property {string} id
+ * @property {import('../types.public').SvelteMdTemplateTransform} transform
  */
 
 /**
@@ -36,7 +34,7 @@ function nodeWithPosition(node) {
  * @returns {Promise<void>}
  */
 export async function transformMarkdown(input) {
-	const { s, ast, tags, transform } = input;
+	const { s, ast, tags, transform, id } = input;
 
 	/** @type {string[]} */
 	const templates = [];
@@ -91,7 +89,7 @@ export async function transformMarkdown(input) {
 	// return early if no template is detected
 	if (!templates.length) return;
 
-	const replacements = await transform(templates);
+	const replacements = await transform({ templates, id });
 	for (let i = 0; i < replacements.length; i++) {
 		const { start, end } = positions[i];
 		const replacement = replacements[i].replaceAll('!ESCAPE!{', () => '&lbrace;');
@@ -101,12 +99,14 @@ export async function transformMarkdown(input) {
 
 /**
  * @param {import('unified').Processor<any, any, any, any, any>} processor
- * @returns {Transform}
+ * @returns {import('../types.public').SvelteMdTemplateTransform}
  */
 export function createUnifiedTransform(processor) {
-	return async function (templates) {
+	return async function ({ templates, id }) {
 		const merged = templates.join(`\n\n${DELIMITER}\n\n`);
-		const transformed = (await processor.process(merged)).toString().trim();
+		const vfile = new VFile(merged);
+		if (id) vfile.path = id; // FIXME: missing test case to trigger else path
+		const transformed = (await processor.process(vfile)).toString().trim();
 		return transformed.split(DELIMITER);
 	};
 }

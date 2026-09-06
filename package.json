@@ -98,6 +98,7 @@
 		"remark-rehype": "^11.1.2",
 		"unified": "^11.0.5",
 		"unist-util-visit": "^5.1.0",
+		"vfile": "^6.0.3",
 		"zimmerframe": "^1.1.5"
 	},
 	"devEngines": {

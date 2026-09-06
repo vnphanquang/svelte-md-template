@@ -11,6 +11,7 @@ import { createMinimalProcessor, fromSvelte, svelte } from '../test-utils';
 
 const transform = createUnifiedTransform(createMinimalProcessor());
 const tags = ['markdown'];
+const id = 'input.svelte';
 
 test('can transform markdown from tagged template expression', async () => {
 	const code = svelte`
@@ -22,7 +23,7 @@ test('can transform markdown from tagged template expression', async () => {
 	`;
 
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
@@ -47,7 +48,7 @@ test('can preserve position', async () => {
 	`;
 
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
@@ -75,7 +76,7 @@ test('can reference each other', async () => {
 	`;
 
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
@@ -88,21 +89,21 @@ test('can reference each other', async () => {
 
 test('shoud skip empty input', async () => {
 	const input = fromSvelte('');
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation('');
 });
 
 test('shoud skip expression tags that are not tagged template', async () => {
 	const code = svelte`<p>{'Should skip'}</p>`;
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(code);
 });
 
 test('shoud skip tagged template expression that does not match template names', async () => {
 	const code = svelte`<p>{sql\`SELECT * FROM users\`}</p>`;
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(code);
 });
 
@@ -116,7 +117,7 @@ test('should remove $ from expressions', async () => {
 		{markdown\`# Use \${foo} variable\`}
 	`;
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
 	  import { markdown } from 'svelte-md-template';
@@ -141,7 +142,7 @@ console.log({ foo: 'bar' });
 		\`}
 	`;
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
 	  import { markdown } from 'svelte-md-template';
@@ -157,7 +158,7 @@ test('should ignore escaped expression', async () => {
 		'utf-8',
 	);
 	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform });
+	await transformMarkdown({ ...input, tags, transform, id });
 	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
 	<script>
 	  import { markdown } from 'svelte-md-template';

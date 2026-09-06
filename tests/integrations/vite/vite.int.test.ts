@@ -96,7 +96,7 @@ test('can use custom transformer', async () => {
 		{
 			transformer: {
 				type: 'custom',
-				transform: function (templates: string[]) {
+				transform: function ({ templates }) {
 					const delimiter = '<!-- SVELTE_MD -->';
 					const merged = templates.join(`\n\n${delimiter}\n\n`);
 					const md = new MarkdownIt({ html: true });

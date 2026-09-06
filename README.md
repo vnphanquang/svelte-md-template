@@ -35,6 +35,8 @@ export default defineConfig({
 });
 ```
 
+Write content within the `markdown` tagged template:
+
 ```svelte
 <script>
 	import { markdown } from 'svelte-md-template';
@@ -108,7 +110,12 @@ export type SvelteMdTemplateTransformerUnified = {
 };
 export type SvelteMdTemplateTransformerCustom = {
 	type: 'custom';
-	transform: (templates: string[]) => string[] | Promise<string[]>;
+	transform: (input: {
+		/** array of markdown content as they appear from the original Svelte file in tagged templates */
+		templates: string[];
+		/** `id` from vite transform handler, often the path to current file, unless is a virtual file */
+		id?: string;
+	}) => string[] | Promise<string[]>;
 };
 ```
 
@@ -182,7 +189,7 @@ svelteMdTemplate({
 
 ### Bring-Your-Own Transformer
 
-If a use case calls for a strategy other than [unified], e.g [markdown-it](https://github.com/markdown-it/markdown-it), provide a custom transformer:
+If a use case calls for a strategy other than [unified], e.g [markdown-it], provide a custom transformer:
 
 ```typescript
 import { svelteMdTemplate } from 'svelte-md-template';
@@ -191,7 +198,7 @@ import MarkdownIt from 'markdown-it';
 svelteMdTemplate({
 	transformer: {
 		type: 'custom',
-		transform: function (templates: string[]) {
+		transform: function ({ templates }) {
 			const delimiter = '<!-- SVELTE_MD -->';
 			const merged = templates.join(`\n\n${delimiter}\n\n`);
 			const md = new MarkdownIt({ html: true });
