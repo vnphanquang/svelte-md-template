@@ -1,6 +1,6 @@
 {
 	"name": "svelte-md-template",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "transform markdown to html in Svelte files via explicit template",
 	"license": "MIT",
 	"author": {
