@@ -1,10 +1,10 @@
 /* eslint-disable jsdoc/reject-any-type */
 
 /**
- * @template {any} S
- * @param {import('unified').Plugin<S[], any>} plugin
- * @param {...S} settings
- * @returns {[import('unified').Plugin<S[], any>, ...S[]]}
+ * @template {import('unified').Plugin<any[], any>} P
+ * @param {P} plugin
+ * @param {Parameters<P>} settings
+ * @returns {[P, Parameters<P>]}
  */
 export function definePlugin(plugin, ...settings) {
 	return [plugin, ...settings];
