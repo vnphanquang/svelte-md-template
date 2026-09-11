@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2
+
+### Patch Changes
+
+- [`dde352a`](https://github.com/vnphanquang/svelte-md-template/commit/dde352ae8b62db02187d11be195f9c1e9bddccc9) Thanks [@vnphanquang](https://github.com/vnphanquang)! - correct typing of `markdown` tag
+
 ## 0.1.1
 
 ### Patch Changes
