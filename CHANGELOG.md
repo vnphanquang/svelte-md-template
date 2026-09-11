@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+### Patch Changes
+
+- [`b397d06`](https://github.com/vnphanquang/svelte-md-template/commit/b397d063a8e23761642232d9e3de54814557715a) Thanks [@vnphanquang](https://github.com/vnphanquang)! - improve type inference for settings in unified `definePlugin` helper
+
 ## 0.1.2
 
 ### Patch Changes
