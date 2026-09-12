@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.5
+
+### Patch Changes
+
+- [`3010cb8`](https://github.com/vnphanquang/svelte-md-template/commit/3010cb8e2b5300e8a89d2b912e627b5d01cc48cc) Thanks [@vnphanquang](https://github.com/vnphanquang)! - should only strip import that is `markdown`
+
 ## 0.1.4
 
 ### Patch Changes
