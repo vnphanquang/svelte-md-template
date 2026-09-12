@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { Root } from 'mdast';
 import type { PluggableList, Processor } from 'unified';
 
 export type FilterIdSpecs = (string | RegExp)[] | string | RegExp;
@@ -12,7 +11,7 @@ export type SvelteMdTemplateTransformerUnifiedWithPlugins = {
 };
 export type SvelteMdTemplateTransformerUnified = {
 	type: 'unified';
-	processor: Processor<Root, any, any, any, any>;
+	processor: Processor<any, any, any, any, any>;
 };
 export type SvelteMdTemplateTransformerCustom = {
 	type: 'custom';
