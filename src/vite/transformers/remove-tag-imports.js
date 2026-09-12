@@ -7,6 +7,15 @@ import { walk } from 'zimmerframe';
  */
 
 /**
+ * @template {import('estree').Node} N
+ * @param {N} node
+ * @returns {N & Position}
+ */
+function nodeWithPosition(node) {
+	return /** @type {N & Position} */ (/** @type {unknown} */ (node));
+}
+
+/**
  * @typedef RemoveTagImportsInput
  * @property {import('magic-string').MagicString} s
  * @property {import('svelte/compiler').AST.Root} ast
@@ -28,10 +37,31 @@ export function removeTagImports(input) {
 		walk(/** @type {import('estree').Node & Position}  */ (/** @type {unknown} */ (script)), null, {
 			ImportDeclaration(node, { next }) {
 				if (node.source.value !== importSource) return next();
-				for (const specifier of node.specifiers) {
-					names.push(specifier.local.name);
+				/** @type {Position[]} */
+				let removals = [];
+				for (let i = 0; i < node.specifiers.length; i++) {
+					const specifier = node.specifiers[i];
+
+					if (specifier.type !== 'ImportSpecifier') continue;
+
+					const { imported, local } = specifier;
+					if (
+						(imported.type === 'Identifier' && imported.name !== 'markdown') ||
+						(imported.type === 'Literal' && imported.value !== 'markdown')
+					)
+						continue;
+					names.push(local.name);
+
+					const { start, end } = nodeWithPosition(specifier);
+					removals.push({ start, end: i < node.specifiers.length - 1 ? end + 1 : end });
 				}
-				s.remove(node.start, node.end);
+				if (removals.length === node.specifiers.length) {
+					s.remove(node.start, node.end);
+				} else {
+					for (const { start, end } of removals) {
+						s.remove(start, end);
+					}
+				}
 			},
 		});
 	}
