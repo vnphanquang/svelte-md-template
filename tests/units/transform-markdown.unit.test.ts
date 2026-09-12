@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 import {
 	createUnifiedTransform,
@@ -127,29 +127,35 @@ test('should remove $ from expressions', async () => {
 	`);
 });
 
-test('should escape curly brace', async () => {
-	const code = svelte`
+describe('should escape curly brace', () => {
+	test('from original source', async () => {
+		const code = svelte`
 		<script>
-			import { markdown } from 'svelte-md-template';
+		import { markdown } from 'svelte-md-template';
 		</script>
 
 		{markdown\`
-{not-expression}, {another-not-expression}
+		{not-expression}, {another-not-expression}
 
-~~~
-console.log({ foo: 'bar' });
-~~~
+		~~~
+		console.log({ foo: 'bar' });
+		~~~
 		\`}
-	`;
-	const input = fromSvelte(code);
-	await transformMarkdown({ ...input, tags, transform, id });
-	expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
-	<script>
-	  import { markdown } from 'svelte-md-template';
-	</script>
-	<p>&lbrace;not-expression}, &lbrace;another-not-expression}</p>
-	<pre><code>console.log(&lbrace; foo: 'bar' });</code></pre>
-	`);
+		`;
+		const input = fromSvelte(code);
+		await transformMarkdown({ ...input, tags, transform, id });
+		expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
+		<script>
+		import { markdown } from 'svelte-md-template';
+		</script>
+		<p>&lbrace;not-expression}, &lbrace;another-not-expression}</p>
+		<pre><code>console.log(&lbrace; foo: 'bar' });</code></pre>
+		`);
+	});
+
+	test.todo('emerged after transform', async () => {
+
+	})
 });
 
 test('should ignore escaped expression', async () => {

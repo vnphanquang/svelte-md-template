@@ -65,20 +65,17 @@ export async function transformMarkdown(input) {
 					} = nodeWithPosition(quasis);
 					if (cooked) {
 						// FIXME: add test case to trigger else path for this
-						const escaped = cooked
-							// escape {...} otherwise will be registered as Svelte ExpressionTag afterwards
-							// we mark only, then escape after `transform` has run to avoid conflict, e.g.
-							// remark-rehyp will convert `&` to `&#x26;`
-							.replace(/{/g, '!ESCAPE!{');
-						template.update(start, end, escaped);
+						template.update(start, end, cooked);
 					}
 				}
 
 				// remove $ from expression, i.e ${...}, so that they are registered correctly as
 				// Svelte ExpressionTag afterwards
+				// Note: we mark only, then unesacpe after `transform` has run, so that other `{`
+				// emerging form `transform` can be escaped first
 				for (const exp of expression.quasi.expressions) {
 					const { start } = nodeWithPosition(exp);
-					template.remove(start - 2, start - 1);
+					template.update(start - 2, start, '!EXP!');
 				}
 
 				templates.push(template.toString());
@@ -92,7 +89,9 @@ export async function transformMarkdown(input) {
 	const replacements = await transform({ templates, id });
 	for (let i = 0; i < replacements.length; i++) {
 		const { start, end } = positions[i];
-		const replacement = replacements[i].replaceAll('!ESCAPE!{', () => '&lbrace;');
+		const replacement = replacements[i]
+			.replaceAll('{', () => '&lbrace;')
+			.replaceAll('!EXP!', () => '{');
 		s.update(start, end, replacement);
 	}
 }
