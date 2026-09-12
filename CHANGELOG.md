@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6
+
+### Patch Changes
+
+- [`64fe128`](https://github.com/vnphanquang/svelte-md-template/commit/64fe12877c8e2407d05c75fc29e2e28d0c4b6948) Thanks [@vnphanquang](https://github.com/vnphanquang)! - escape intermittent `{` from `transform` output
+
 ## 0.1.5
 
 ### Patch Changes
