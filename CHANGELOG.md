@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+### Patch Changes
+
+- [`e0debd6`](https://github.com/vnphanquang/svelte-md-template/commit/e0debd6016b20f65b7e0c3e88371cb0774de2e3a) Thanks [@vnphanquang](https://github.com/vnphanquang)! - relax typing of `transformer.processor` (unified mode)
+
 ## 0.1.3
 
 ### Patch Changes
