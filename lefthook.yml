@@ -10,11 +10,11 @@ pre-commit:
   commands:
     1_elint:
       run: pnpm eslint --fix {staged_files}
-      glob: '*.{js,ts}'
+      glob: '**/*.{js,ts}'
       stage_fixed: true
     2_prettier:
       run: pnpm prettier --write {staged_files}
-      glob: '*.{js,ts,json,md,yaml}'
+      glob: '**/*.{js,ts,json,md,yaml}'
       stage_fixed: true
       exclude:
         - pnpm-lock.yaml
