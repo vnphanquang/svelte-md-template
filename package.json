@@ -51,6 +51,8 @@
 		"access": "public"
 	},
 	"scripts": {
+		"boot": "pnpm install & run-p boot:*",
+		"boot:lefthook": "lefthook install",
 		"dev": "vite dev",
 		"lint:es": "eslint .",
 		"lint": "run-p lint:*",

@@ -31,6 +31,8 @@ If you have an idea and don't know where to start yet, consider [opening a discu
 
 The project also supports [devenv]. Simply activate with `devenv shell` or set up [Auto Activation](https://devenv.sh/auto-activation/).
 
+Run `pnpm:boot` after cloning the repo to install and setup necessary toolings.
+
 ### Tmux Template
 
 There is an executable bash script at the project root named [.tmux.template], which spawns a recommended [tmux] session for convenience.
