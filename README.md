@@ -78,48 +78,7 @@ The intermediate Svelte code looks something like:
 
 ### Motivation
 
-Popular Markdown-in-Svelte solutions (that i know of) often mixes Svelte and Markdown syntax at the top level. An example with [mdsvex] is:
-
-```markdown
-<script>
-  import { Penguin } from '$lib/components';
-</script>
-
-# mdsvex
-
-svelte in markdown
-
-<Penguin walk={true} />
-```
-
-The same can be said with [vite-plugin-svelte-md]. Such strategies work well for simple use cases. However, as i use them more extensively,
-especially for writing interative blog posts and documentation, some inconveniences start to surface:
-
-1. Toolings degrade, e.g. format / lint / highlight, because i would need to decide whether to treat the buffer as Markdown **or** Svelte, neglecting support for the other.
-2. There are compatibility issues with Svelte syntax. For exampe, see
-   [vite-plugin-svelte-md > Svelte Compatibility](https://github.com/ota-meshi/vite-plugin-svelte-md#-svelte-compatibility),
-   or [mdsvex > issue 550 (enhance-img)](https://github.com/pngwn/MDsveX/issues/550).
-   As Svelte semantics evolve, maintaining compatibility may require significant effort.
-3. Upstream transformer is locked-in (e.g. [unified] or [markdown-it]), and the library often
-   implements more features where i don't need them, but not enough where i need so.
-
-`svelte-md-template` is my _naive_ take on a more explicit, minimal, and customisable approach,
-utilising as much standard constructs as possible, In a way, it reverses the priority: Svelte-first, markdown as needed.
-"Naive" because i may be ignorant to the implications this approach has in practice.
-
-So far, it has served me well:
-
-1. good tooling support: `markdown` tagged templates are often automatically picked up for syntax-highligting / formatting,
-   or can be specified so in LSP / formatter settings.
-   See [Recommended Prettier Config](#recommended-prettier-config) for an example;
-2. minimal processing: the package footprint is quite small, as it doesn't have to maintain custom AST or complex parsing.
-   Theoretically, fewer compatibility issues should arise, if at all.
-
-> [!NOTE]
-> Disclaimer: small footprint does not necessarily means more optimised. I have not done any
-> benchmark against other tools.
-
-Of course, no solution is without tradeoffs. See [Tradeoffs & Caveats](#tradeoffs-caveats) for more information.
+See the blog post "[Rethinking Markdown in Svelte](https://vnphanquang.com/blog/rethinking-markdown-in-svelte)" for more context.
 
 ### When to **not** Use This?
 
