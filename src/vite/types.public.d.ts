@@ -49,6 +49,13 @@ export interface SvelteMdTemplateOptions {
 	/** configure how markdown is transformed */
 	transformer?: SvelteMdTemplateTransformer;
 	/**
+	 * whether to strip indentation. When `false` (default), multiline string must not be indented
+	 * otherwise markdown content will be parsed as fenced code block.
+	 *
+	 * @default false
+	 */
+	dedent?: boolean;
+	/**
 	 * name of the package / alias used in the tag imports
 	 *
 	 * @default 'svelte-md-template'

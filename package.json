@@ -72,7 +72,6 @@
 		"@vitest/coverage-v8": "^5.0.0",
 		"@vitest/ui": "^5.0.0",
 		"@vnphanquang/eslint-config": "^4.2.1",
-		"dedent": "^1.7.2",
 		"dts-buddy": "^0.8.3",
 		"eslint": "^10.9.1",
 		"eslint-plugin-jsdoc": "^64.3.5",
@@ -95,6 +94,7 @@
 		"svelte": ">=5.0.0"
 	},
 	"dependencies": {
+		"dedent": "^1.7.2",
 		"magic-string": "^1.2.3",
 		"rehype-stringify": "^10.0.1",
 		"remark-parse": "^11.0.0",

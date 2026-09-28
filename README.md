@@ -271,6 +271,42 @@ svelteMdTemplate({
 });
 ```
 
+## Stripping Indentation
+
+It is probably a good idea to not indent your markdown content. This is to prevent language
+tool (i.e your LSP / syntax highlighting / editor setup) from mistakently parsing content as
+[indended code block](https://spec.commonmark.org/0.31.2/#indented-code-blocks).
+
+```svelte
+{markdown(\`
+	Don't indent here
+	as it will be parsed as
+	an indented code block
+\`)}
+```
+
+For example, here is a Neovim setup showing the difference between having indentation...
+
+![No syntax highlighting with indentation](././github/images/with-indentation.png)
+
+...and not having indentation:
+
+![Syntax highlighting when no indentation](././github/images/no-indentation.png)
+
+In the event your editor setup is smart enough to strip indentation, or you don't care about
+language tool. You can turn on the `dedent` option...
+
+```typescript
+import { svelteMdTemplate } from 'svelte-md-template';
+import MarkdownIt from 'markdown-it';
+
+svelteMdTemplate({
+	dedent: true,
+});
+```
+
+...in which case indentation will be stripped automatically during transform.
+
 ## Recommended Prettier Config
 
 Make sure necessary prettier plugins are installed:
@@ -293,7 +329,7 @@ export default {
 			files: '**/*.svelte',
 			options: /** @satisfies {import('prettier-plugin-embed').PrettierPluginEmbedOptions} */ ({
 				embeddedMarkdownTags: ['markdown'],
-				noEmbeddedMultiLineIndentation: ['markdown'],
+				noEmbeddedMultiLineIndentation: ['markdown'], // optional, see note below
 			}),
 		},
 	],
@@ -303,7 +339,9 @@ export default {
 If using an alias for the `markdown` template, adjust accordingly.
 
 > [!NOTE]
-> `noEmbeddedMultiLineIndentation` is to avoid indenting the code inside `` markdown`...` ``, which will be mistakenly picked up by syntax-highlight tooling as an indented code block.
+> `noEmbeddedMultiLineIndentation` is to avoid indenting the code inside `` markdown`...` ``,
+> which will be mistakenly picked up by syntax-highlight tooling as an indented code block.
+> See [Stripping Indentation](#stripping-indentation) for more information.
 
 ## Tradeoffs & Caveats
 

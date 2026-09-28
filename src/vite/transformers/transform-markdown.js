@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/reject-any-type */
 
+import dedent from 'dedent';
 import { VFile } from 'vfile';
 import { walk } from 'zimmerframe';
 
@@ -26,6 +27,7 @@ function nodeWithPosition(node) {
  * @property {import('svelte/compiler').AST.Root} ast
  * @property {string[]} tags
  * @property {string} id
+ * @property {boolean} [dedent]
  * @property {import('../types.public').SvelteMdTemplateTransform} transform
  */
 
@@ -34,7 +36,7 @@ function nodeWithPosition(node) {
  * @returns {Promise<void>}
  */
 export async function transformMarkdown(input) {
-	const { s, ast, tags, transform, id } = input;
+	const { s, ast, tags, transform, id, dedent: toDedent = false } = input;
 
 	/** @type {string[]} */
 	const templates = [];
@@ -78,7 +80,9 @@ export async function transformMarkdown(input) {
 					template.update(start - 2, start, '!EXP!');
 				}
 
-				templates.push(template.toString());
+				const dedented = toDedent ? dedent(template.toString()) : template.toString();
+
+				templates.push(dedented);
 			},
 		},
 	);

@@ -153,9 +153,7 @@ describe('should escape curly brace', () => {
 		`);
 	});
 
-	test.todo('emerged after transform', async () => {
-
-	})
+	test.todo('emerged after transform', async () => {});
 });
 
 test('should ignore escaped expression', async () => {
@@ -188,4 +186,54 @@ test('should preserve expression in code elements', async () => {
 	<p>foo is: {foo}</p>
 	<pre><code>foo is {foo}</code></pre>
 	`);
+});
+
+describe('dedent', () => {
+	test('can strip identatation if instructed', async () => {
+		const code = svelte`
+			<script>
+				import { markdown } from 'svelte-md-template';
+			</script>
+
+			{markdown\`
+					# Example
+					This should not be taken as a fenced code block
+			\`}
+		`;
+
+		const input = fromSvelte(code);
+		await transformMarkdown({ ...input, tags, transform, id, dedent: true });
+
+		expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
+			<script>
+				import { markdown } from 'svelte-md-template';
+			</script>
+
+			<h1>Example</h1>
+			<p>This should not be taken as a fenced code block</p>
+		`);
+	});
+
+	test('should preseve indentation by default', async () => {
+		const code = svelte`
+			<script>
+				import { markdown } from 'svelte-md-template';
+			</script>
+
+			{markdown\`
+				This will be a fenced code block
+			\`}
+	`;
+
+		const input = fromSvelte(code);
+		await transformMarkdown({ ...input, tags, transform, id });
+
+		expect(input.s.toString()).toBeIgnoringNewlineAndIndentation(svelte`
+	<script>
+	  import { markdown } from 'svelte-md-template';
+	</script>
+
+	<pre><code>This will be a fenced code block</code></pre>
+	`);
+	});
 });

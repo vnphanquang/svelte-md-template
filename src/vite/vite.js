@@ -72,7 +72,7 @@ export async function svelteMdTemplate(options) {
 					transform = createUnifiedTransform(processor);
 				}
 
-				await transformMarkdown({ s, ast, tags, transform, id });
+				await transformMarkdown({ s, ast, tags, transform, id, dedent: options?.dedent });
 
 				return {
 					code: s.toString(),
