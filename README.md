@@ -287,11 +287,11 @@ tool (i.e your LSP / syntax highlighting / editor setup) from mistakently parsin
 
 For example, here is a Neovim setup showing the difference between having indentation...
 
-![No syntax highlighting with indentation](././github/images/with-indentation.png)
+![No syntax highlighting with indentation](https://raw.githubusercontent.com/vnphanquang/svelte-md-template/refs/heads/main/.github/images/with-indentation.png)
 
 ...and not having indentation:
 
-![Syntax highlighting when no indentation](././github/images/no-indentation.png)
+![Syntax highlighting when no indentation](https://raw.githubusercontent.com/vnphanquang/svelte-md-template/refs/heads/main/.github/images/no-indentation.png)
 
 In the event your editor setup is smart enough to strip indentation, or you don't care about
 language tool. You can turn on the `dedent` option...
