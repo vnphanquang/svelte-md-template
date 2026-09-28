@@ -293,8 +293,8 @@ For example, here is a Neovim setup showing the difference between having indent
 
 ![Syntax highlighting when no indentation](https://raw.githubusercontent.com/vnphanquang/svelte-md-template/refs/heads/main/.github/images/no-indentation.png)
 
-In the event your editor setup is smart enough to strip indentation, or you don't care about
-language tool. You can turn on the `dedent` option...
+In the event your editor setup is smart enough to strip indentation, or language tool is not a concern,
+you can turn on the `dedent` option...
 
 ```typescript
 import { svelteMdTemplate } from 'svelte-md-template';
