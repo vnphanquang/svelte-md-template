@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.7
+
+### Patch Changes
+
+- [`42a1795`](https://github.com/vnphanquang/svelte-md-template/commit/42a17955d557ef5a036e2fd290e70f1a93534577) Thanks [@vnphanquang](https://github.com/vnphanquang)! - bump dependencies (`magic-string`)
+
+- [`f5232cb`](https://github.com/vnphanquang/svelte-md-template/commit/f5232cb41fd1a5a8fb96cffcacca40a1e7171f8c) Thanks [@vnphanquang](https://github.com/vnphanquang)! - allow auto-strip-indentation by turning on `dedent` option
+
 ## 0.1.6
 
 ### Patch Changes
