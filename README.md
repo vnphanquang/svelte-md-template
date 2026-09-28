@@ -442,7 +442,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.
 
 ---
 
-[built by human, not agents](https://gist.github.com/vnphanquang/018ee2b2080c9dc9890327f3d233998b).
+[built by human, not agents](https://vnphanquang.com/blog/some-thoughts-and-questions-on-genai)
 
 [npmx]: https://npmx.dev/package/svelte-md-template
 [markdown-it]: https://github.com/markdown-it/markdown-it
