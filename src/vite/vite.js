@@ -74,6 +74,7 @@ export async function svelteMdTemplate(options) {
 
 				await transformMarkdown({ s, ast, tags, transform, id, dedent: options?.dedent });
 
+				if (!s.hasChanged()) return;
 				return {
 					code: s.toString(),
 					map: s.generateMap({ hires: 'boundary', includeContent: true }),
