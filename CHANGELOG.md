@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.9
+
+### Patch Changes
+
+- [`bb67eae`](https://github.com/vnphanquang/svelte-md-template/commit/bb67eae572ff2c37208f3fe6cdb55662aa11a12c) Thanks [@vnphanquang](https://github.com/vnphanquang)! - make sure root `.d.ts` files are included in the published tarball
+
 ## 0.1.8
 
 ### Patch Changes
