@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.8
+
+### Patch Changes
+
+- [`97c3062`](https://github.com/vnphanquang/svelte-md-template/commit/97c3062d3aa9b289ad95c99ea81ffdb580b21ed2) Thanks [@vnphanquang](https://github.com/vnphanquang)! - return early if detected nothing in AST
+
+- [`41c9f05`](https://github.com/vnphanquang/svelte-md-template/commit/41c9f05ceb11968c5ec81b52f0ee9f96c83e0b31) Thanks [@vnphanquang](https://github.com/vnphanquang)! - turn on high-res source map
+
 ## 0.1.7
 
 ### Patch Changes
