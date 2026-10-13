@@ -77,9 +77,15 @@ export async function svelteMdTemplate(options) {
 				if (!s.hasChanged()) return;
 				return {
 					code: s.toString(),
-					map: s.generateMap({ hires: 'boundary', includeContent: true }),
+					map: s.generateMap({
+						source: id,
+						includeContent: true,
+						hires: true,
+					}),
 				};
 			},
 		},
 	};
 }
+
+// TODO: export a standalone Svelte preprocessor for setup that does not use Vite
