@@ -147,7 +147,7 @@ const processor = unified()
 ```
 
 The processor is permissive, i.e `allowDangerousHtml`, for convenience. Security may not be a major concern here since
-markdown content **_should_** be static at build time.
+markdown content **_should_** be static at compile-time.
 
 Some customisation recipes are listed in the next sub-sections.
 

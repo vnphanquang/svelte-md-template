@@ -8,6 +8,6 @@ test('markdown template is exported', () => {
 
 test('invoking markdown should throw', () => {
 	expect(() => markdown('foo')).toThrow(
-		'This markdown template was not processed at build time. Make sure the vite plugin is set up correctly.',
+		'This markdown template was not processed at compile-time. Make sure the vite plugin is set up correctly.',
 	);
 });

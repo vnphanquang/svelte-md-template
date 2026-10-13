@@ -167,7 +167,7 @@ test('can specify custom exclude', async () => {
 			},
 		),
 	).rejects.toThrow(
-		'This markdown template was not processed at build time. Make sure the vite plugin is set up correctly.',
+		'This markdown template was not processed at compile-time. Make sure the vite plugin is set up correctly.',
 	);
 });
 
