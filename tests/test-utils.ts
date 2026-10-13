@@ -14,9 +14,7 @@ import prettierConfig from '../prettier.config.js';
 import type { SvelteMdTemplateOptions } from '../src/vite';
 import { svelteMdTemplate } from '../src/vite/vite.js';
 
-export const markdown = dedent;
 export const svelte = dedent.withOptions({ trimWhitespace: true, alignValues: false });
-export const html = dedent.withOptions({ trimWhitespace: true });
 
 export function fromSvelte(svelte: string) {
 	const s = new MagicString(svelte);
