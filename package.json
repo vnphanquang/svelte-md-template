@@ -52,7 +52,6 @@
 		"access": "public"
 	},
 	"scripts": {
-		"prepublishOnly": "node scripts/emit-root-dts.js",
 		"boot": "pnpm install & run-p boot:*",
 		"boot:lefthook": "lefthook install",
 		"dev": "vite dev",
@@ -60,7 +59,7 @@
 		"lint:knip": "knip",
 		"lint": "run-p lint:*",
 		"format": "prettier . --check",
-		"build": "pnpm dts && publint",
+		"build": "pnpm dts && node scripts/emit-root-dts.js && publint",
 		"dts": "dts-buddy --write",
 		"test": "vitest --coverage",
 		"ci:test": "vitest run --coverage"
