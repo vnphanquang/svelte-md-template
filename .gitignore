@@ -20,3 +20,6 @@ vite.config.ts.timestamp-*
 .devenv*
 devenv.local.nix
 devenv.local.yaml
+
+## Published types
+/*.d.ts
