@@ -75,6 +75,7 @@
 		"dts-buddy": "^0.8.3",
 		"eslint": "^10.11.0",
 		"eslint-plugin-jsdoc": "^64.5.4",
+		"knip": "^6.41.0",
 		"markdown-it": "^15.0.2",
 		"mdast-util-from-markdown": "^2.0.3",
 		"npm-run-all": "^4.1.5",
@@ -86,7 +87,7 @@
 		"remark-codeblock-source": "^1.0.4",
 		"remark-enhance-codeblock": "^1.2.3",
 		"svelte": "^5.57.1",
-		"typescript": "^6.0.0",
+		"typescript": "^6.0.3",
 		"vite": "^8.3.1",
 		"vitest": "^5.0.2"
 	},
