@@ -52,6 +52,7 @@
 		"access": "public"
 	},
 	"scripts": {
+		"prepublishOnly": "node scripts/emit-root-dts.js",
 		"boot": "pnpm install & run-p boot:*",
 		"boot:lefthook": "lefthook install",
 		"dev": "vite dev",
